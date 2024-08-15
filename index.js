@@ -3,17 +3,22 @@ const readline = require('readline')
 const { google } = require('googleapis')
 const dateFns = require('date-fns')
 const { exec } = require('child_process')
+const path = require('path')
 
 /*
   Note: This file was first created by ChatGPT and then modified by tbc
 */
 
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-const TOKEN_PATH = 'token.json'
-const APPLESCRIPT_TEMPLATE = fs.readFileSync('apple-script.template', 'utf-8')
-const OPTIONAL_CALENDAR_ID = fs.existsSync('calendar.id') && fs.readFileSync('calendar.id', 'utf-8').trim()
+const TOKEN_PATH = path.join(__dirname, 'token.json')
+const CREDENTIALS_PATH = path.join(__dirname, 'credentials.json')
+const APPLESCRIPT_TEMPLATE_PATH = path.join(__dirname, 'apple-script.template')
+const OPTIONAL_CALENDAR_ID_PATH = path.join(__dirname, 'calendar.id')
+const APPLESCRIPT_TEMPLATE = fs.readFileSync(APPLESCRIPT_TEMPLATE_PATH, 'utf-8')
+const OPTIONAL_CALENDAR_ID = fs.existsSync(OPTIONAL_CALENDAR_ID_PATH) && fs.readFileSync(OPTIONAL_CALENDAR_ID_PATH, 'utf-8').trim()
+const NEXT_MEETING_PATH = path.join(__dirname, 'next-meeting.scpt')
 
-fs.readFile('credentials.json', async (err, content) => {
+fs.readFile(CREDENTIALS_PATH, async (err, content) => {
   if (err) return console.log('Error loading client secret file:', err)
   authorize(JSON.parse(content), runForever)
 })
@@ -89,8 +94,8 @@ async function lookForNextEventAndJoin (auth) {
     const script = APPLESCRIPT_TEMPLATE
       .replace('MEETING_URL', meetingUrl)
       .replace('MEETING_TIME_IN_SECONDS', meetingDurationInSeconds + secondsUntil)
-    fs.writeFileSync('next-meeting.scpt', script)
-    exec('osascript next-meeting.scpt', () => { /* noop */ })
+    fs.writeFileSync(NEXT_MEETING_PATH, script)
+    exec(`osascript ${NEXT_MEETING_PATH}`, () => { /* noop */ })
     console.log(`[${new Date().toISOString()}] Joining ${nextEvent.summary} ${meetingUrl}`)
   }
 }
