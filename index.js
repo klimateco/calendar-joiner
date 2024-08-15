@@ -8,15 +8,13 @@ const { exec } = require('child_process')
   Note: This file was first created by ChatGPT and then modified by tbc
 */
 
-// If modifying these SCOPES, delete the file token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 const TOKEN_PATH = 'token.json'
 const APPLESCRIPT_TEMPLATE = fs.readFileSync('apple-script.template', 'utf-8')
+const OPTIONAL_CALENDAR_ID = fs.existsSync('calendar.id') && fs.readFileSync('calendar.id', 'utf-8').trim()
 
-// Load client secrets from a local file.
 fs.readFile('credentials.json', async (err, content) => {
   if (err) return console.log('Error loading client secret file:', err)
-  // Authorize a client with credentials, then call the Google Calendar API.
   authorize(JSON.parse(content), runForever)
 })
 
@@ -24,7 +22,6 @@ function authorize(credentials, callback) {
   const { client_secret, client_id, redirect_uris } = credentials.installed
   const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0])
 
-  // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, (err, token) => {
     if (err) return getAccessToken(oAuth2Client, callback)
     oAuth2Client.setCredentials(JSON.parse(token))
@@ -47,7 +44,7 @@ function getAccessToken(oAuth2Client, callback) {
     oAuth2Client.getToken(code, (err, token) => {
       if (err) return console.error('Error retrieving access token', err)
       oAuth2Client.setCredentials(token)
-      // Store the token to disk for later program executions
+
       fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
         if (err) return console.error(err)
         console.log('Token stored to', TOKEN_PATH)
@@ -73,7 +70,7 @@ async function runForever (auth) {
 async function lookForNextEventAndJoin (auth) {
   const calendar = google.calendar({ version: 'v3', auth })
   const { data: { items: [nextEvent] } } = await calendar.events.list({
-    calendarId: 'c_1887o8etaucfcgbfg975pq49c1gk4@resource.calendar.google.com', // Email of the "Main Room" account
+    calendarId: OPTIONAL_CALENDAR_ID || 'primary',
     timeMin: (new Date()).toISOString(),
     maxResults: 1,
     singleEvents: true,
