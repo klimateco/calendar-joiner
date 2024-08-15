@@ -1,3 +1,7 @@
+tell application "System Events"
+    keystroke "f" using {command down, control down} -- fullscreen
+end tell
+
 tell application "Google Chrome"
     activate
     set newWindow to make new window
@@ -15,4 +19,8 @@ delay MEETING_TIME_IN_SECONDS
 
 tell application "Google Chrome"
     close newWindow
+end tell
+
+tell application "System Events"
+    keystroke "f" using {command down, control down} -- fullscreen
 end tell
