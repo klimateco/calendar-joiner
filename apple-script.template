@@ -1,0 +1,18 @@
+tell application "Google Chrome"
+    activate
+    set newWindow to make new window
+    set URL of active tab of newWindow to "MEETING_URL"
+    delay 5 -- wait for the page to load
+    tell active tab of front window
+        execute javascript "[...document.querySelectorAll('span')].filter(a => a.innerText === 'Join now' || a.innerText === 'Ask to join')[0].click()"
+    end tell
+    tell application "System Events"
+        keystroke "f" using {command down, control down} -- fullscreen
+    end tell
+end tell
+
+delay MEETING_TIME_IN_SECONDS
+
+tell application "Google Chrome"
+    close newWindow
+end tell

@@ -1,0 +1,17 @@
+{
+  "name": "calendar-joiner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^3.6.0",
+    "google-auth-library": "^9.13.0",
+    "googleapis": "^140.0.1"
+  }
+}
