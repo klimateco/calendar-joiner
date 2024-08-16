@@ -87,10 +87,11 @@ async function lookForNextEventAndJoin (auth) {
   const secondsUntil = dateFns.differenceInSeconds(startAsDate, new Date())
   const meetingDurationInSeconds = dateFns.differenceInSeconds(endAsDate, startAsDate)
   const meetingUrl = nextEvent.conferenceData?.entryPoints[0]?.uri
-  const hasAlreadyJoinedMeeting = joinedMeetings.includes(meetingUrl)
+  const meetingUniqueId = `${nextEvent.id}-${nextEvent.start.dateTime}`
+  const hasAlreadyJoinedMeeting = joinedMeetings.includes(meetingUniqueId)
   const shouldJoinMeeting = meetingUrl && !hasAlreadyJoinedMeeting && secondsUntil < 10
   if (shouldJoinMeeting) {
-    joinedMeetings.push(meetingUrl)
+    joinedMeetings.push(meetingUniqueId)
     const script = APPLESCRIPT_TEMPLATE
       .replace('MEETING_URL', meetingUrl)
       .replace('MEETING_TIME_IN_SECONDS', meetingDurationInSeconds + secondsUntil)
