@@ -15,6 +15,7 @@ tell application "Google Chrome"
     tell application "System Events"
         keystroke "f" using {command down, control down} -- fullscreen
     end tell
+    say "MEETING_SUMMARY"
 end tell
 
 delay MEETING_TIME_IN_SECONDS
