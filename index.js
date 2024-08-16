@@ -89,7 +89,7 @@ async function lookForNextEventAndJoin (auth) {
   const meetingUrl = nextEvent.conferenceData?.entryPoints[0]?.uri
   const meetingUniqueId = `${nextEvent.id}-${nextEvent.start.dateTime}`
   const hasAlreadyJoinedMeeting = joinedMeetings.includes(meetingUniqueId)
-  const shouldJoinMeeting = meetingUrl && !hasAlreadyJoinedMeeting && secondsUntil < 10000000
+  const shouldJoinMeeting = meetingUrl && !hasAlreadyJoinedMeeting && secondsUntil < 10
   if (shouldJoinMeeting) {
     joinedMeetings.push(meetingUniqueId)
     const script = APPLESCRIPT_TEMPLATE
