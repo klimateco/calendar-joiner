@@ -88,6 +88,7 @@ async function lookForNextEventAndJoin (auth) {
   const meetingDurationInSeconds = dateFns.differenceInSeconds(endAsDate, startAsDate)
   const meetingUrl = nextEvent.conferenceData?.entryPoints[0]?.uri
   const meetingUniqueId = `${nextEvent.id}-${nextEvent.start.dateTime}`
+  const meetingSummary = nextEvent.summary.replace(/[^\x00-\x7F]/g, '')
   const hasAlreadyJoinedMeeting = joinedMeetings.includes(meetingUniqueId)
   const shouldJoinMeeting = meetingUrl && !hasAlreadyJoinedMeeting && secondsUntil < 10
   if (shouldJoinMeeting) {
@@ -95,7 +96,7 @@ async function lookForNextEventAndJoin (auth) {
     const script = APPLESCRIPT_TEMPLATE
       .replace('MEETING_URL', meetingUrl)
       .replace('MEETING_TIME_IN_SECONDS', meetingDurationInSeconds + secondsUntil)
-      .replace('MEETING_SUMMARY', nextEvent.summary)
+      .replace('MEETING_SUMMARY', meetingSummary)
     fs.writeFileSync(NEXT_MEETING_PATH, script)
     exec(`osascript ${NEXT_MEETING_PATH}`, () => { /* noop */ })
     console.log(`[${new Date().toISOString()}] Joining ${nextEvent.summary} ${meetingUrl}`)
