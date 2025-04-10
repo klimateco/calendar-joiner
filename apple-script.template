@@ -1,6 +1,7 @@
-tell application "System Events"
-    keystroke "f" using {command down, control down} -- fullscreen
-end tell
+-- Uncomment this if you need to go out of fullscreen first
+-- tell application "System Events"
+--     keystroke "f" using {command down, control down} -- fullscreen
+-- end tell
 
 delay 3
 
@@ -10,11 +11,12 @@ tell application "Google Chrome"
     set URL of active tab of newWindow to "MEETING_URL"
     delay 5 -- wait for the page to load
     tell active tab of front window
-        execute javascript "[...document.querySelectorAll('span')].filter(a => a.innerText === 'Join now' || a.innerText === 'Ask to join')[0].click()"
+        execute javascript "[...document.querySelectorAll('span')].filter(e => e.innerText === 'Join now' || e.innerText === 'Ask to join' || e.innerText === 'Join anyway').forEach(e => e.click())"
     end tell
-    tell application "System Events"
-        keystroke "f" using {command down, control down} -- fullscreen
-    end tell
+    -- Uncomment this if you want Chrome to be in fullscreen
+    -- tell application "System Events"
+    --     keystroke "f" using {command down, control down} -- fullscreen
+    -- end tell
     say "MEETING_SUMMARY"
 end tell
 
@@ -26,6 +28,7 @@ end tell
 
 delay 3
 
-tell application "System Events"
-    keystroke "f" using {command down, control down} -- fullscreen
-end tell
+-- Uncomment this if you want to go back into fullscreen after Chrome closes
+-- tell application "System Events"
+--     keystroke "f" using {command down, control down} -- fullscreen
+-- end tell
